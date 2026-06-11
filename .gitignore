@@ -1,0 +1,109 @@
+# =====================
+# Java / Spring Boot
+# =====================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+.mvn/
+mvnw
+mvnw.cmd
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# =====================
+# Node / Vite / React / TypeScript
+# =====================
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =====================
+# Environment variables
+# =====================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# =====================
+# IDE / Editor
+# =====================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+*.iml
+*.iws
+*.ipr
+*.sw?
+*.swo
+*~
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# =====================
+# OS
+# =====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# =====================
+# Misc
+# =====================
+*.pem
+*.pub
+*.key
+*.crt
+*.cert
+*.p12
+*.jks
+*.keystore
+*.orig
+*.rej
+*.bak
+*.tmp
+*.temp
+.history/
+.sass-cache/
+*.tsbuildinfo
+eslintcache
+.eslintcache
+*.tsbuildinfo
