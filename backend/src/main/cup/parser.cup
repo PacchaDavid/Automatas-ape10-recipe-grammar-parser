@@ -1,0 +1,126 @@
+package com.recipeparser.parser;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.recipeparser.model.Token;
+import com.recipeparser.model.TokenType;
+import com.recipeparser.model.ast.*;
+
+parser code {:
+    @Override
+    public void report_error(String message, Object info) {
+        // Suppress standard error printing
+    }
+
+    @Override
+    public List<Integer> expected_token_ids() {
+        List<Integer> expected = new ArrayList<>();
+        int state = ((java_cup.runtime.Symbol)stack.peek()).parse_state;
+        short[] row = action_table()[state];
+        if (row != null) {
+            for (int i = 0; i < row.length; i += 2) {
+                int symId = row[i];
+                if (symId != -1 && symId != 1) { 
+                    expected.add(symId);
+                }
+            }
+        }
+        return expected;
+    }
+
+    @Override
+    public void syntax_error(java_cup.runtime.Symbol cur_token) {
+        Token t = (Token) cur_token.value;
+        List<Integer> expectedIds = expected_token_ids();
+        List<String> expectedNames = new ArrayList<>();
+        for (int id : expectedIds) {
+            expectedNames.add(symToString(id));
+        }
+        
+        String expected = String.join(" o ", expectedNames);
+        String foundType = t != null ? t.type().toString() : symToString(cur_token.sym);
+        String lexeme = t != null ? t.lexeme() : "";
+        
+        String message;
+        if (t != null && t.type() == TokenType.EOF) {
+            message = "Se esperaba al menos un paso";
+        } else {
+            message = "Se esperaba " + expected + " pero se encontro " + foundType + (lexeme.isEmpty() ? "" : " ('" + lexeme + "')");
+        }
+        
+        int line = t != null ? t.line() : cur_token.left;
+        int col = t != null ? t.column() : cur_token.right;
+        throw new ParseException(message, line, col);
+    }
+    
+    private String symToString(int id) {
+        return switch (id) {
+            case sym.INGREDIENT -> "INGREDIENT";
+            case sym.STEP -> "STEP";
+            case sym.GRAMS -> "GRAMS";
+            case sym.OF -> "OF";
+            case sym.BOIL -> "BOIL";
+            case sym.ADD -> "ADD";
+            case sym.FOR -> "FOR";
+            case sym.MINUTES -> "MINUTES";
+            case sym.NUMBER -> "NUMBER";
+            case sym.WORD -> "WORD";
+            case sym.COLON -> "COLON";
+            case sym.SEMICOLON -> "SEMICOLON";
+            case sym.EOF -> "EOF";
+            default -> "error";
+        };
+    }
+:};
+
+/* Terminals */
+terminal Token INGREDIENT, STEP, GRAMS, OF, BOIL, ADD, FOR, MINUTES;
+terminal Token NUMBER, WORD;
+terminal Token COLON, SEMICOLON;
+
+/* Non-terminals */
+non terminal RecipeNode programa;
+non terminal IngredientNode ingrediente;
+non terminal List<StepNode> pasos;
+non terminal StepNode paso;
+non terminal ActionNode accion;
+non terminal TimeNode tiempo;
+
+/* Start symbol */
+start with programa;
+
+/* Grammar rules */
+programa ::= ingrediente:i pasos:p
+             {: RESULT = new RecipeNode(i, p); :}
+           ;
+
+ingrediente ::= INGREDIENT COLON NUMBER:n GRAMS OF WORD:w SEMICOLON
+                {: RESULT = new IngredientNode(Integer.parseInt(n.lexeme()), "GRAMS", w.lexeme()); :}
+              ;
+
+pasos ::= paso:s
+          {: 
+             List<StepNode> list = new ArrayList<>();
+             list.add(s);
+             RESULT = list;
+          :}
+        | pasos:list paso:s
+          {:
+             list.add(s);
+             RESULT = list;
+          :}
+        ;
+
+paso ::= STEP NUMBER:n COLON accion:a SEMICOLON
+         {: RESULT = new StepNode(Integer.parseInt(n.lexeme()), a); :}
+       ;
+
+accion ::= BOIL WORD:w tiempo:t
+           {: RESULT = new ActionNode("BOIL", w.lexeme(), t); :}
+         | ADD WORD:w
+           {: RESULT = new ActionNode("ADD", w.lexeme(), null); :}
+         ;
+
+tiempo ::= FOR NUMBER:n MINUTES
+           {: RESULT = new TimeNode(Integer.parseInt(n.lexeme()), "MINUTES"); :}
+         ;
