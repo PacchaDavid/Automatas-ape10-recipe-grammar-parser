@@ -57,6 +57,7 @@ lerna-debug.log*
 # =====================
 # IDE / Editor
 # =====================
+.vscode/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
