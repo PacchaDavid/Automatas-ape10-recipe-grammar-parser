@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: recipe-parser-cfg
+
+server:
+  port: 9090
