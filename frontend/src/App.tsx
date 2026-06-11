@@ -15,11 +15,24 @@ STEP 3: BOIL pasta FOR 8 MINUTES;
 STEP 4: ADD salt;`,
   simple: `INGREDIENT: 100 GRAMS OF sugar;
 STEP 1: ADD salt;`,
+  ensalada: `INGREDIENT: 200 GRAMS OF lettuce;
+STEP 1: ADD lettuce;
+STEP 2: ADD salt;`,
+  cafe: `INGREDIENT: 15 GRAMS OF sugar;
+STEP 1: BOIL water FOR 5 MINUTES;
+STEP 2: ADD coffee;
+STEP 3: ADD sugar;`,
   errorLexico: `INGREDIENT: 500 GRAMS OF flour;
 STEP 1: BOIL water FOR 20, MINUTES; // Error: ',' no es un caracter valido`,
   errorSintactico: `ingredient: 500 grams of flour; // Error: palabras clave en minuscula
-STEP 1: BOIL water FOR 20 MINUTES;`
+STEP 1: BOIL water FOR 20 MINUTES;`,
+  errorMissingSemicolon: `INGREDIENT: 500 GRAMS OF flour // Error: falta ';'
+STEP 1: BOIL water FOR 20 MINUTES;`,
+  errorInvalidAction: `INGREDIENT: 500 GRAMS OF flour;
+STEP 1: BAKE flour FOR 30 MINUTES; // Error: BAKE no es accion valida`,
+  errorNegativeNumber: `INGREDIENT: -500 GRAMS OF flour; // Error: '-' no es valido`
 };
+
 
 export default function App() {
   const [text, setText] = useState<string>(EXAMPLES.basico);
@@ -162,11 +175,20 @@ export default function App() {
                   onChange={(e) => handleLoadExample(e.target.value as keyof typeof EXAMPLES)}
                   defaultValue="basico"
                 >
-                  <option value="basico">1. Harina Básico</option>
-                  <option value="pasta">2. Pasta Completo</option>
-                  <option value="simple">3. Azúcar Simple</option>
-                  <option value="errorLexico">⚠️ Error Léxico</option>
-                  <option value="errorSintactico">⚠️ Error Sintáctico</option>
+                  <optgroup label="Casos de Éxito">
+                    <option value="basico">1. Harina Básico</option>
+                    <option value="pasta">2. Pasta Completo</option>
+                    <option value="simple">3. Azúcar Simple</option>
+                    <option value="ensalada">4. Ensalada Rápida</option>
+                    <option value="cafe">5. Café con Azúcar</option>
+                  </optgroup>
+                  <optgroup label="Casos de Error">
+                    <option value="errorLexico">⚠️ Carácter Inválido (Léxico)</option>
+                    <option value="errorNegativeNumber">⚠️ Número Negativo (Léxico)</option>
+                    <option value="errorSintactico">⚠️ Minúsculas Reservadas (Sintáctico)</option>
+                    <option value="errorMissingSemicolon">⚠️ Falta Punto y Coma (Sintáctico)</option>
+                    <option value="errorInvalidAction">⚠️ Acción Inválida (Sintáctico)</option>
+                  </optgroup>
                 </select>
               </div>
             </div>
