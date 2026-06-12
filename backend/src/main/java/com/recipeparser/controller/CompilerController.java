@@ -13,10 +13,52 @@ import com.recipeparser.model.ast.RecipeNode;
 import com.recipeparser.parser.ParseException;
 import com.recipeparser.parser.Parser;
 
+/**
+ * Controlador REST que expone el endpoint de compilacion del DSL de recetas.
+ *
+ * <p>Procesa solicitudes HTTP POST para analizar textos en el lenguaje DSL
+ * definido, ejecutando el pipeline completo de compilacion:</p>
+ * <ol>
+ *   <li>Analisis lexico mediante {@link Lexer} (JFlex).</li>
+ *   <li>Validacion de errores lexicos.</li>
+ *   <li>Analisis sintactico mediante {@link Parser} (CUP).</li>
+ *   <li>Construccion del AST.</li>
+ *   <li>Retorno de resultados como JSON.</li>
+ * </ol>
+ *
+ * <p>El controlador maneja tres escenarios posibles:</p>
+ * <ul>
+ *   <li><b>Exito:</b> {@code success=true}, tokens + AST completos, errores vacio.</li>
+ *   <li><b>Error lexico:</b> {@code success=false}, tokens disponibles, AST nulo, errores lexicos.</li>
+ *   <li><b>Error sintactico:</b> {@code success=false}, tokens disponibles, AST nulo, error sintactico.</li>
+ * </ul>
+ *
+ * <p>Todas las respuestas utilizan HTTP 200 OK, delegando la informacion de
+ * exito o fracaso al campo {@code success} del cuerpo JSON.</p>
+ */
 @RestController
 @RequestMapping("/api/compiler")
 public class CompilerController {
 
+    /**
+     * Endpoint principal que analiza un texto de receta y devuelve los
+     * resultados del proceso de compilacion.
+     *
+     * <p>Flujo de procesamiento:</p>
+     * <ol>
+     *   <li>Extrae el texto del cuerpo de la solicitud ({@link AnalyzeRequest}).</li>
+     *   <li>Inicializa el {@link Lexer} y obtiene la lista completa de tokens.</li>
+     *   <li>Si hay tokens {@code ERROR} (caracteres invalidos), retorna
+     *       inmediatamente con errores lexicos y sin AST.</li>
+     *   <li>Si no hay errores lexicos, ejecuta el {@link Parser}.</li>
+     *   <li>Si el parser lanza {@link ParseException}, retorna con error
+     *       sintactico y sin AST.</li>
+     *   <li>Si todo es correcto, retorna con el AST construido.</li>
+     * </ol>
+     *
+     * @param request Cuerpo de la solicitud con el campo {@code text}.
+     * @return Respuesta HTTP con el resultado del analisis.
+     */
     @PostMapping("/analyze")
     public ResponseEntity<AnalyzeResponse> analyze(@RequestBody AnalyzeRequest request) {
         String text = request.text();

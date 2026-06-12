@@ -1,3 +1,10 @@
+# Recipe Parser CFG - Backend
+# Configuracion principal de la aplicacion Spring Boot.
+#
+# Los valores pueden sobrescribirse al ejecutar el JAR:
+#   java -jar app.jar --server.port=8080
+#   java -jar app.jar --spring.application.name=otro-nombre
+
 spring:
   application:
     name: recipe-parser-cfg
