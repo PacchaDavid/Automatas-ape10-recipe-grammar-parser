@@ -1,3 +1,20 @@
+// Recipe Parser CFG - Backend
+// Especificacion CUP para el analizador sintactico del DSL de recetas.
+//
+// Este archivo define la gramatica libre de contexto que CUP convierte
+// en un parser LALR(1) (RecipeParser.java). La gramatica describe el
+// lenguaje de recetas con las siguientes producciones:
+//
+//   programa        -> ingrediente paso+
+//   ingrediente     -> INGREDIENT : NUMBER GRAMS OF WORD ;
+//   paso            -> STEP NUMBER : accion ;
+//   accion          -> BOIL WORD tiempo | ADD WORD
+//   tiempo          -> FOR NUMBER MINUTES
+//
+// Manejo de errores:
+//   El parser code sobreescribe syntax_error() para lanzar ParseException
+//   con mensajes descriptivos en espanol y la posicion exacta del error.
+
 package com.recipeparser.parser;
 
 import java.util.ArrayList;
@@ -7,11 +24,23 @@ import com.recipeparser.model.TokenType;
 import com.recipeparser.model.ast.*;
 
 parser code {:
+    /**
+     * Suprime la impresion estandar de errores que CUP realiza por defecto
+     * en System.err. El manejo de errores se realiza exclusivamente a
+     * traves de syntax_error() y la excepcion ParseException.
+     */
     @Override
     public void report_error(String message, Object info) {
-        // Suppress standard error printing
+        // Suprime la salida estandar de errores de CUP
     }
 
+    /**
+     * Calcula la lista de IDs de terminales que el parser espera recibir
+     * en el estado actual. Utiliza la tabla de acciones generada por CUP
+     * para determinar que transiciones son validas desde el estado actual.
+     *
+     * @return Lista de IDs de terminales esperados (constantes de sym).
+     */
     @Override
     public List<Integer> expected_token_ids() {
         List<Integer> expected = new ArrayList<>();
@@ -28,6 +57,15 @@ parser code {:
         return expected;
     }
 
+    /**
+     * Maneja un error sintactico extrayendo la informacion del token actual,
+     * calculando los tokens esperados y lanzando una ParseException con un
+     * mensaje descriptivo en espanol.
+     *
+     * Casos especiales:
+     *   - Si el token actual es EOF, el mensaje indica que faltan pasos.
+     *   - Si el token actual tiene lexema, se incluye en el mensaje.
+     */
     @Override
     public void syntax_error(java_cup.runtime.Symbol cur_token) {
         Token t = (Token) cur_token.value;
@@ -53,6 +91,10 @@ parser code {:
         throw new ParseException(message, line, col);
     }
     
+    /**
+     * Convierte un ID de terminal (constante de sym.java) a su nombre
+     * legible como cadena. Util para construir mensajes de error.
+     */
     private String symToString(int id) {
         return switch (id) {
             case sym.INGREDIENT -> "INGREDIENT";
@@ -73,12 +115,20 @@ parser code {:
     }
 :};
 
-/* Terminals */
+/* ==================================================================
+   DECLARACION DE TERMINALES (tokens del lexer)
+   ==================================================================
+   Cada terminal se asocia con un objeto Token del modelo de dominio.
+   El ID numerico de cada terminal se genera automaticamente en sym.java. */
+
 terminal Token INGREDIENT, STEP, GRAMS, OF, BOIL, ADD, FOR, MINUTES;
 terminal Token NUMBER, WORD;
 terminal Token COLON, SEMICOLON;
 
-/* Non-terminals */
+/* ==================================================================
+   DECLARACION DE NO TERMINALES
+   ================================================================== */
+
 non terminal RecipeNode programa;
 non terminal IngredientNode ingrediente;
 non terminal List<StepNode> pasos;
@@ -86,18 +136,32 @@ non terminal StepNode paso;
 non terminal ActionNode accion;
 non terminal TimeNode tiempo;
 
-/* Start symbol */
+/* ==================================================================
+   SIMBOLO INICIAL
+   ================================================================== */
+
 start with programa;
 
-/* Grammar rules */
+/* ==================================================================
+   REGLAS DE PRODUCCION Y ACCIONES SEMANTICAS
+   ================================================================== */
+
+/* programa -> ingrediente paso+
+   Construye el nodo raiz del AST con el ingrediente y la lista de pasos. */
 programa ::= ingrediente:i pasos:p
              {: RESULT = new RecipeNode(i, p); :}
            ;
 
+/* ingrediente -> INGREDIENT : NUMBER GRAMS OF WORD ;
+   Construye el nodo ingrediente con cantidad, unidad y nombre.
+   Ejemplo: INGREDIENT: 200 GRAMS OF Flour; */
 ingrediente ::= INGREDIENT COLON NUMBER:n GRAMS OF WORD:w SEMICOLON
                 {: RESULT = new IngredientNode(Integer.parseInt(n.lexeme()), "GRAMS", w.lexeme()); :}
               ;
 
+/* pasos -> paso | pasos paso
+   Lista de uno o mas pasos. La recursion permite longitud arbitraria.
+   La recursion por la izquierda evita el desbordamiento de pila. */
 pasos ::= paso:s
           {: 
              List<StepNode> list = new ArrayList<>();
@@ -111,16 +175,24 @@ pasos ::= paso:s
           :}
         ;
 
+/* paso -> STEP NUMBER : accion ;
+   Construye el nodo paso con el numero de paso y la accion. */
 paso ::= STEP NUMBER:n COLON accion:a SEMICOLON
          {: RESULT = new StepNode(Integer.parseInt(n.lexeme()), a); :}
        ;
 
+/* accion -> BOIL WORD tiempo | ADD WORD
+   Dos tipos de accion:
+     - BOIL: requiere un tiempo (FOR NUMBER MINUTES)
+     - ADD: no requiere tiempo */
 accion ::= BOIL WORD:w tiempo:t
            {: RESULT = new ActionNode("BOIL", w.lexeme(), t); :}
          | ADD WORD:w
            {: RESULT = new ActionNode("ADD", w.lexeme(), null); :}
          ;
 
+/* tiempo -> FOR NUMBER MINUTES
+   Construye el nodo tiempo con duracion en minutos. */
 tiempo ::= FOR NUMBER:n MINUTES
            {: RESULT = new TimeNode(Integer.parseInt(n.lexeme()), "MINUTES"); :}
          ;

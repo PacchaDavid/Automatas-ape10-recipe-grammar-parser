@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Recipe Parser CFG - Backend
+  ~
+  ~ Archivo de configuracion Maven para el proyecto Spring Boot.
+  ~
+  ~ Este POM integra tres tecnologias fundamentales:
+  ~   1. Spring Boot 3.4.3: Framework de aplicaciones web y REST.
+  ~   2. JFlex 1.9.1: Generador de analizadores lexicos (lexer).
+  ~   3. CUP 11b: Generador de analizadores sintacticos LALR(1) (parser).
+  ~
+  ~ Flujo de generacion de codigo:
+  ~   JFlex (RecipeLexer.flex) -> RecipeLexer.java
+  ~   CUP   (parser.cup)       -> RecipeParser.java + sym.java
+  ~
+  ~ El plugin spring-boot-maven-plugin empaqueta todo en un JAR ejecutable.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -45,6 +61,12 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <!--
+                  JFlex Maven Plugin: Genera el analizador lexico a partir
+                  del archivo de especificacion JFlex.
+                  Archivo fuente: src/main/jflex/RecipeLexer.flex
+                  Codigo generado: target/generated-sources/jflex/
+                  -->
                 <groupId>de.jflex</groupId>
                 <artifactId>jflex-maven-plugin</artifactId>
                 <version>1.9.1</version>
@@ -57,6 +79,14 @@
                 </executions>
             </plugin>
             <plugin>
+                <!--
+                  CUP Maven Plugin: Genera el parser LALR(1) a partir del
+                  archivo de especificacion CUP.
+                  Archivo fuente: src/main/cup/parser.cup
+                  Codigo generado:
+                    - target/generated-sources/cup/.../RecipeParser.java
+                    - target/generated-sources/cup/.../sym.java
+                  -->
                 <groupId>com.github.vbmacher</groupId>
                 <artifactId>cup-maven-plugin</artifactId>
                 <version>11b-20160615</version>
