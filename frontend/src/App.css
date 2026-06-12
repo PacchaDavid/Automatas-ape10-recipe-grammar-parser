@@ -1,4 +1,35 @@
-/* App container layout */
+/* ==========================================================================
+   App.css — Component Styles for App.tsx
+   --------------------------------------------------------------------------
+   Estilos específicos del componente principal App.
+
+   Organización por secciones (en orden de aparición en el DOM):
+     1. .app-container       → Layout principal
+     2. .app-header          → Header con título y badge
+     3. .app-grid            → Grid de 2 columnas responsivo
+     4. .panel               → Base glassmórfica para tarjetas
+     5. .code-editor-*       → Editor con gutter + textarea
+     6. .examples-*          → Selector de ejemplos
+     7. .btn                 → Botones (primario, secundario)
+     8. .guide-*             → Panel de guía de palabras clave
+     9. .status-*            → Tarjeta de estado del análisis
+     10. .error-*            → Panel y lista de errores
+     11. .ast-*              → Árbol sintáctico AST
+     12. .token-*            → Visualizador de tokens
+
+   Convenciones:
+     - Prefijos semánticos para fácil navegación
+     - Variables CSS para colores, sombras y transiciones
+     - Mobile-first con media queries al final
+     - Soporte de tema oscuro via prefers-color-scheme
+   ========================================================================== */
+
+/* ========================================================================
+   1. APP CONTAINER — Layout principal centrado
+      max-width: 1400px para pantallas grandes
+      padding horizontal para mobile
+      fadeIn al montar el componente
+   ======================================================================== */
 .app-container {
   max-width: 1400px;
   width: 100%;
@@ -10,7 +41,12 @@
   animation: fadeIn 0.4s ease-out;
 }
 
-/* Header design */
+/* ========================================================================
+   2. HEADER — Identidad visual
+      .header-badge: badge tipo "pill" con gradiente
+      h1: gradiente en texto (webkit-background-clip)
+      .header-subtitle: descripción centrada y acotada
+   ======================================================================== */
 .app-header {
   text-align: center;
   margin-bottom: 8px;
@@ -47,7 +83,12 @@
   margin: 0 auto;
 }
 
-/* Responsive Grid Columns */
+/* ========================================================================
+   3. APP GRID — Layout de dos columnas
+      grid-template-columns: 1.1fr 1fr (izquierda ligeramente más ancha)
+      align-items: start para que cada columna crezca independientemente
+      Responsive: a 1fr en tablets/mobile (<1024px)
+   ======================================================================== */
 .app-grid {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -61,7 +102,13 @@
   }
 }
 
-/* Panel bases (Glassmorphic) */
+/* ========================================================================
+   4. PANEL — Base glassmórfica
+      backdrop-filter: blur() para el efecto de vidrio esmerilado
+      border semitransparente para profundidad
+      transition en hover para feedback visual
+      margin-bottom: 24px para separación entre paneles apilados
+   ======================================================================== */
 .panel {
   background-color: var(--bg-card);
   backdrop-filter: blur(var(--glass-blur));
@@ -106,7 +153,14 @@
   font-weight: 600;
 }
 
-/* Code Editor container */
+/* ========================================================================
+   5. CODE EDITOR — Textarea con gutter de números de línea
+      Estructura:
+        .code-editor-container
+          ├── .gutter (números de línea)
+          └── .code-textarea
+      focus-within: resalta el borde cuando el textarea está activo
+   ======================================================================== */
 .code-editor-container {
   display: flex;
   position: relative;
@@ -124,7 +178,7 @@
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* Editor Gutter / Line Numbers */
+/* Gutter: columna izquierda con números de línea */
 .gutter {
   width: 46px;
   background-color: rgba(0, 0, 0, 0.02);
@@ -133,8 +187,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  user-select: none;
-  overflow-y: hidden; /* Scrolled dynamically via App.tsx */
+  user-select: none; /* Evita selección accidental de números */
+  overflow-y: hidden; /* Scroll sincronizado desde el textarea via JS */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -153,24 +207,26 @@
   height: 1.5rem;
 }
 
-/* Textarea input */
+/* Textarea: área de edición de código */
 .code-textarea {
   flex: 1;
   background: transparent;
   border: none;
   outline: none;
-  resize: none;
+  resize: none; /* Desactiva el resize nativo */
   font-family: var(--font-mono);
   font-size: 0.9rem;
   color: var(--text-primary);
   padding: 16px;
   line-height: 1.5rem;
   overflow-y: auto;
-  white-space: pre;
+  white-space: pre; /* Preserva espacios y saltos de línea */
   tab-size: 4;
 }
 
-/* Select examples selector styling */
+/* ========================================================================
+   6. EXAMPLES — Selector de ejemplos predefinidos
+   ======================================================================== */
 .examples-wrapper {
   display: flex;
   align-items: center;
@@ -200,7 +256,13 @@
   border-color: var(--text-secondary);
 }
 
-/* Button UI */
+/* ========================================================================
+   7. BUTTONS — Sistema de botones
+      .btn:           base con gap para icono SVG + texto
+      .btn-primary:   gradiente + sombra (acción principal)
+      .btn-secondary: outline sutil (acción secundaria)
+      :active:        scale(0.97) para feedback táctil
+   ======================================================================== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -254,7 +316,10 @@
   margin-top: 18px;
 }
 
-/* Guide box (rules list) */
+/* ========================================================================
+   8. GUIDE — Panel de palabras clave del DSL
+      Grid de 2 columnas con items que muestran keyword + descripción
+   ======================================================================== */
 .guide-panel h3 {
   font-size: 1rem;
   margin-bottom: 12px;
@@ -294,7 +359,11 @@
   color: var(--accent-color);
 }
 
-/* Status Panel */
+/* ========================================================================
+   9. STATUS — Tarjeta de estado del análisis
+      .status-{initial|loading|success|error}: modifica colores de borde,
+      fondo, dot indicator y badge según el estado actual.
+   ======================================================================== */
 .status-card {
   background-color: var(--bg-card);
   backdrop-filter: blur(var(--glass-blur));
@@ -316,6 +385,7 @@
   font-weight: 500;
 }
 
+/* Dot indicator: círculo de color que cambia según estado */
 .status-indicator-dot {
   width: 10px;
   height: 10px;
@@ -345,7 +415,7 @@
   color: var(--text-primary);
 }
 
-/* Status specific modifications */
+/* Status: loading — spinner animado + texto de proceso */
 .status-loading-content {
   display: flex;
   align-items: center;
@@ -369,6 +439,7 @@
   animation: successPulse 1.2s infinite ease-in-out;
 }
 
+/* Status: success — bordes verdes, texto de confirmación */
 .status-success {
   border-color: var(--color-success-border);
   background-color: var(--color-success-bg);
@@ -384,6 +455,7 @@
   color: white;
 }
 
+/* Status: error — bordes rojos, texto de error */
 .status-error {
   border-color: var(--color-error-border);
   background-color: var(--color-error-bg);
@@ -410,7 +482,12 @@
   font-weight: 500;
 }
 
-/* Errors list block */
+/* ========================================================================
+   10. ERRORS — Panel de visualización de errores
+       .error-item: cada error es un bloque con tipo, coordenadas y mensaje
+       .error-item.interactive: permite clic para navegar al editor
+       .go-to-arrow: flecha que aparece en hover del error
+   ======================================================================== */
 .error-panel-results {
   border-color: var(--color-error-border);
   background-color: rgba(239, 68, 68, 0.02);
@@ -469,15 +546,15 @@
 }
 
 .error-badge-type.orange {
-  background-color: var(--color-warning);
+  background-color: var(--color-warning); /* Errores léxicos */
 }
 
 .error-badge-type.coral {
-  background-color: var(--color-error);
+  background-color: var(--color-error);    /* Errores sintácticos */
 }
 
 .error-badge-type.red {
-  background-color: #7f1d1d;
+  background-color: #7f1d1d;               /* Errores de sistema */
 }
 
 .error-coord {
@@ -489,13 +566,13 @@
   margin-left: auto;
   color: var(--accent-color);
   font-weight: 500;
-  opacity: 0;
+  opacity: 0;            /* Oculto por defecto */
   transform: translateX(-4px);
   transition: all var(--transition-fast);
 }
 
 .error-item:hover .go-to-arrow {
-  opacity: 1;
+  opacity: 1;            /* Visible al hacer hover */
   transform: translateX(0);
 }
 
@@ -503,10 +580,20 @@
   font-size: 0.9rem;
   color: var(--text-primary);
   font-family: var(--font-mono);
-  word-break: break-all;
+  word-break: break-all; /* Para mensajes largos sin desbordar */
 }
 
-/* Tokens display panel */
+/* ========================================================================
+   11. TOKENS — Visualizador de tokens del lexer
+       Cada token se renderiza como un "chip" con tipo, coordenadas y lexema.
+       Los chips se colorean por categoría semántica:
+         - keyword:   palabras reservadas (índigo)
+         - number:    valores numéricos (ámbar)
+         - word:      identificadores (verde)
+         - separator: puntuación (gris)
+         - eof:       fin de archivo (atenuado)
+         - error:     tokens inválidos (rojo)
+   ======================================================================== */
 .tokens-intro {
   font-size: 0.85rem;
   color: var(--text-secondary);
@@ -530,7 +617,7 @@
   gap: 2px;
   min-width: 90px;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  cursor: help;
+  cursor: help; /* Tooltip nativo con tipo y coordenadas */
 }
 
 .token-chip:hover {
@@ -560,7 +647,7 @@
   word-break: break-all;
 }
 
-/* Token categories color code */
+/* Colores por categoría */
 .category-keyword {
   background-color: rgba(99, 102, 241, 0.08);
   border-color: rgba(99, 102, 241, 0.25);
@@ -610,7 +697,33 @@
   color: var(--color-error);
 }
 
-/* AST visual tree layout */
+/* ========================================================================
+   12. AST — Árbol Sintáctico Abstracto
+       Renderiza jerárquicamente el AST del compilador.
+
+       Estructura del árbol visual:
+         .ast-tree-node (nodo actual)
+           ├── .node-badge (cabecera del nodo)
+           └── .node-children-container (conectores + hijos)
+                ├── .ast-tree-branch (rama individual)
+                │    ├── .branch-line (línea vertical conectora)
+                │    └── .ast-tree-node (nodo hijo)
+                └── ...
+
+       Convenciones de conectores:
+         - Líneas verticales: .branch-line, .leaf-line
+         - Líneas horizontales: pseudo-elementos ::before en branches
+         - La línea vertical del padre se conecta con las horizontales
+           que unen a los hijos
+
+       Tipos de nodo:
+         - RECETA (raíz): gradiente índigo-púrpura
+         - INGREDIENT:     verde esmeralda
+         - PASOS (grupo):  índigo
+         - STEP:           gris neutro con índice circular
+         - ACCIÓN:         BOIL (rojo) o ADD (azul)
+         - TIME:           detalle de duración
+   ======================================================================== */
 .ast-panel {
   border-color: var(--color-success-border);
   background-color: rgba(16, 185, 129, 0.01);
@@ -630,6 +743,7 @@
   position: relative;
 }
 
+/* Badge: cabecera visual del nodo */
 .node-badge {
   display: inline-flex;
   align-items: center;
@@ -639,7 +753,7 @@
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
   background-color: var(--bg-editor);
-  z-index: 10;
+  z-index: 10; /* Sobre las líneas conectoras */
   font-weight: 600;
   font-size: 0.95rem;
 }
@@ -648,7 +762,7 @@
   font-size: 1.1rem;
 }
 
-/* Node types colors */
+/* Colores específicos por tipo de nodo */
 .node-type-recipe {
   background: var(--primary-gradient);
   color: white;
@@ -668,7 +782,7 @@
   background-color: var(--accent-glow);
 }
 
-/* Child layout connections */
+/* Contenedor de hijos: distribuye en fila con espacio entre ellos */
 .node-children-container {
   display: flex;
   gap: 48px;
@@ -676,7 +790,7 @@
   position: relative;
 }
 
-/* Connector lines */
+/* Línea vertical que baja del padre al contenedor de hijos */
 .node-children-container::before {
   content: '';
   position: absolute;
@@ -688,6 +802,7 @@
   transform: translateX(-50%);
 }
 
+/* Rama individual en el árbol */
 .ast-tree-branch {
   position: relative;
   display: flex;
@@ -695,7 +810,7 @@
   align-items: center;
 }
 
-/* Horizontal connectors mapping children */
+/* Líneas horizontales entre hermanos */
 .node-children-container > .ast-tree-branch:not(:first-child):not(:last-child)::before {
   content: '';
   position: absolute;
@@ -706,6 +821,7 @@
   background-color: var(--border-color);
 }
 
+/* Línea horizontal desde el centro del padre hasta el primer hijo */
 .node-children-container > .ast-tree-branch:first-child::before {
   content: '';
   position: absolute;
@@ -716,6 +832,7 @@
   background-color: var(--border-color);
 }
 
+/* Línea horizontal desde el último hijo hacia el centro */
 .node-children-container > .ast-tree-branch:last-child::before {
   content: '';
   position: absolute;
@@ -726,6 +843,7 @@
   background-color: var(--border-color);
 }
 
+/* Línea vertical que conecta la horizontal con cada hijo */
 .branch-line {
   position: absolute;
   top: -32px;
@@ -736,7 +854,7 @@
   transform: translateX(-50%);
 }
 
-/* Details boxes below nodes */
+/* Caja de detalles debajo del badge del nodo */
 .node-details {
   background-color: var(--bg-editor);
   border: 1px solid var(--border-color);
@@ -764,7 +882,7 @@
   font-size: 0.75rem;
 }
 
-/* Steps hierarchy list */
+/* Contenedor de la lista de pasos (vertical) */
 .steps-hierarchy-container {
   display: flex;
   flex-direction: column;
@@ -775,7 +893,7 @@
   padding-left: 16px;
 }
 
-/* Left vertical line representing list connection */
+/* Línea vertical izquierda que conecta todos los pasos */
 .steps-hierarchy-container::before {
   content: '';
   position: absolute;
@@ -786,12 +904,14 @@
   background-color: var(--border-color);
 }
 
+/* Rama de un paso individual */
 .step-leaf-branch {
   position: relative;
   display: flex;
   align-items: center;
 }
 
+/* Línea horizontal desde la vertical izquierda hasta el paso */
 .leaf-line {
   position: absolute;
   top: 50%;
@@ -806,6 +926,7 @@
   width: 100%;
 }
 
+/* Badge de paso individual */
 .node-type-step {
   border-color: var(--border-color);
   border-radius: 8px;
@@ -817,6 +938,7 @@
   gap: 8px;
 }
 
+/* Índice circular del paso */
 .node-index {
   background-color: var(--text-secondary);
   color: white;
@@ -836,7 +958,7 @@
   }
 }
 
-/* Action details inside step */
+/* Detalles de acción dentro del paso */
 .action-details {
   background-color: var(--bg-editor);
   border: 1px solid var(--border-color);
@@ -864,11 +986,13 @@
   text-transform: uppercase;
 }
 
+/* BOIL: rojo (calor) */
 .action-boil {
   background-color: rgba(239, 68, 68, 0.1);
   color: var(--color-error);
 }
 
+/* ADD: azul (ingrediente nuevo) */
 .action-add {
   background-color: rgba(59, 130, 246, 0.1);
   color: var(--color-info);
@@ -880,6 +1004,7 @@
   color: var(--text-primary);
 }
 
+/* Línea de tiempo (solo visible en BOIL) */
 .action-time-line {
   display: flex;
   align-items: center;

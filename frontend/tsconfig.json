@@ -1,7 +1,21 @@
+/* ==========================================================================
+   tsconfig.json — Configuración raíz de TypeScript
+   --------------------------------------------------------------------------
+   Archivo de proyecto references que delega la configuración real a
+   tsconfig.app.json (para src/) y tsconfig.node.json (para vite.config.ts).
+
+   Este enfoque de "project references" permite:
+     - Compilación más rápida (cada subproyecto se compila por separado)
+     - Mejor aislamiento de configuraciones entre app y herramientas
+     - El archivo "files": [] indica que no compila archivos directamente
+   ========================================================================== */
 {
+  /* No compila archivos propios, solo referencia subproyectos */
   "files": [],
   "references": [
+    /* Configuración para el código de la aplicación (src/) */
     { "path": "./tsconfig.app.json" },
+    /* Configuración para herramientas Node.js (vite.config.ts) */
     { "path": "./tsconfig.node.json" }
   ]
 }

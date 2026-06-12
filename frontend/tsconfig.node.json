@@ -1,24 +1,35 @@
+/* ==========================================================================
+   tsconfig.node.json — TypeScript Config para Node.js (vite.config.ts)
+   --------------------------------------------------------------------------
+   Configuración específica para archivos que corren en Node.js,
+   principalmente vite.config.ts.
+
+   Diferencias clave con tsconfig.app.json:
+     - lib: solo ES2023 (sin DOM — no hay navegador aquí)
+     - types: node (tipados de Node.js)
+     - No incluye JSX (no hay React en configuraciones)
+     - Incluye vite.config.ts en lugar de src/
+   ========================================================================== */
 {
   "compilerOptions": {
+    /* --- Emisión y Compilación --- */
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "target": "es2023",
-    "lib": ["ES2023"],
-    "module": "esnext",
-    "types": ["node"],
-    "skipLibCheck": true,
+    "target": "es2023",                             /* ES moderno */
+    "lib": ["ES2023"],                              /* Solo APIs de ES, sin DOM */
+    "module": "esnext",                             /* Módulos ESM */
+    "types": ["node"],                              /* Tipados de Node.js */
+    "skipLibCheck": true,                           /* Omite chequeo de .d.ts */
+    "moduleResolution": "bundler",                  /* Resolución tipo bundler */
+    "allowImportingTsExtensions": true,             /* Permite .ts en imports */
+    "verbatimModuleSyntax": true,                   /* Preserva type-only imports/exports */
+    "moduleDetection": "force",                     /* Detecta módulos */
+    "noEmit": true,                                 /* No emite JS */
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-
-    /* Linting */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    /* --- Reglas de Calidad --- */
+    "noUnusedLocals": true,                         /* Error en locales no usados */
+    "noUnusedParameters": true,                     /* Error en parámetros no usados */
+    "erasableSyntaxOnly": true,                     /* Syntax borrable */
+    "noFallthroughCasesInSwitch": true              /* Error si falta break */
   },
   "include": ["vite.config.ts"]
 }

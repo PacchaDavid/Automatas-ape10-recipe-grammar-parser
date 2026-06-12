@@ -1,25 +1,40 @@
+/* ==========================================================================
+   tsconfig.app.json — TypeScript Config para la Aplicación (src/)
+   --------------------------------------------------------------------------
+   Configuración específica para el código fuente de la aplicación React.
+
+   Target: ES2023 (características modernas de JS)
+   Module: ESNext (import/export nativos para bundlers como Vite)
+   JSX: react-jsx (transformación automática JSX, React 17+)
+   Strict: desactivado (noUnusedLocals, noUnusedParameters activos)
+
+   Incluye:
+     - src/ (todo el código de la aplicación)
+     - vite/client (tipados para import.meta.env, HMR, etc.)
+     - verbatimModuleSyntax (mantiene sintaxis de módulo exacta)
+     - erasableSyntaxOnly (solo syntax que puede eliminarse en transpilación)
+   ========================================================================== */
 {
   "compilerOptions": {
+    /* --- Emisión y Compilación --- */
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "es2023",
-    "lib": ["ES2023", "DOM"],
-    "module": "esnext",
-    "types": ["vite/client"],
-    "skipLibCheck": true,
+    "target": "es2023",                              /* ES moderno */
+    "lib": ["ES2023", "DOM"],                        /* APIs del lenguaje y navegador */
+    "module": "esnext",                              /* Módulos ESM nativos */
+    "types": ["vite/client"],                        /* Tipados de Vite (import.meta.env, etc.) */
+    "skipLibCheck": true,                            /* Omite chequeo de .d.ts (acelera) */
+    "moduleResolution": "bundler",                   /* Resolución tipo bundler (Vite) */
+    "allowImportingTsExtensions": true,              /* Permite .ts en imports */
+    "verbatimModuleSyntax": true,                    /* Preserva type-only imports/exports */
+    "moduleDetection": "force",                      /* Detecta módulos (no scripts) */
+    "noEmit": true,                                  /* No emite JS (Vite hace el bundle) */
+    "jsx": "react-jsx",                              /* Transformación JSX automática */
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
-
-    /* Linting */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    /* --- Reglas de Calidad --- */
+    "noUnusedLocals": true,                          /* Error en locales no usados */
+    "noUnusedParameters": true,                      /* Error en parámetros no usados */
+    "erasableSyntaxOnly": true,                      /* Solo syntax borrable en transpilación */
+    "noFallthroughCasesInSwitch": true               /* Error si falta break en switch */
   },
   "include": ["src"]
 }

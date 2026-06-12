@@ -1,65 +1,117 @@
+/* ==========================================================================
+   index.css — Global Styles (CSS Custom Properties + Reset + Animations)
+   --------------------------------------------------------------------------
+   Este archivo define:
+     1. Variables CSS (custom properties) para tema claro y oscuro
+     2. Reset de estilos del navegador (box-sizing, margin, padding)
+     3. Estilos base del body y tipografía
+     4. Scrollbars personalizados
+     5. Animaciones globales keyframe
+
+   Sistema de temas:
+     - Tema claro: valores por defecto en :root
+     - Tema oscuro: @media (prefers-color-scheme: dark) sobreescribe :root
+     - Transiciones suaves entre temas via transition en body
+
+   Fuentes:
+     - Outfit (sans-serif): titulares y texto general
+     - Fira Code (monospace): código, tokens, mensajes técnicos
+   ========================================================================== */
+
+/* Importación de Google Fonts: Outfit (sans) + Fira Code (mono) */
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap');
 
+/* ==========================================================================
+   :root — Variables CSS del Tema Claro
+   --------------------------------------------------------------------------
+   Organización:
+     - bg-*:       colores de fondo (app, cards, editor)
+     - text-*:     colores de texto (primario, secundario)
+     - border-*:   colores de borde
+     - shadow-*:   sombras (sm, md, lg)
+     - primary-*:  gradiente y color de acento principal
+     - color-*:    colores semánticos (success, error, warning, info)
+     - font-*:     familias tipográficas
+     - transition-*: duraciones de transiciones
+     - glass-blur: desenfoque para efecto glassmorphism
+   ========================================================================== */
 :root {
-  /* Colors - Light Theme */
+  /* Fondos */
   --bg-app: #f4f6fa;
   --bg-card: rgba(255, 255, 255, 0.7);
   --bg-editor: #ffffff;
+
+  /* Texto */
   --text-primary: #1e293b;
   --text-secondary: #64748b;
+
+  /* Bordes y sombras */
   --border-color: rgba(226, 232, 240, 0.8);
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.05), 0 4px 6px -4px rgba(15, 23, 42, 0.05);
-  
-  /* Brand Gradients */
+
+  /* Gradiente y acento principal (índigo a púrpura) */
   --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   --accent-color: #6366f1;
   --accent-hover: #4f46e5;
   --accent-glow: rgba(99, 102, 241, 0.2);
-  
-  /* Status Colors */
-  --color-success: #10b981;
+
+  /* Colores semánticos - Tema claro */
+  --color-success: #10b981;           /* Verde esmeralda */
   --color-success-bg: rgba(16, 185, 129, 0.1);
   --color-success-border: rgba(16, 185, 129, 0.3);
-  --color-error: #ef4444;
+  --color-error: #ef4444;             /* Rojo coral */
   --color-error-bg: rgba(239, 68, 68, 0.1);
   --color-error-border: rgba(239, 68, 68, 0.3);
-  --color-warning: #f59e0b;
-  --color-info: #3b82f6;
+  --color-warning: #f59e0b;           /* Ámbar */
+  --color-info: #3b82f6;              /* Azul */
   --color-info-bg: rgba(59, 130, 246, 0.1);
   --color-info-border: rgba(59, 130, 246, 0.3);
-  
-  /* Fonts */
+
+  /* Fuentes */
   --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  
-  /* Transitions */
+
+  /* Transiciones */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
+  /* Glassmorphism */
   --glass-blur: 12px;
 }
 
+/* ==========================================================================
+   Tema Oscuro (prefers-color-scheme: dark)
+   --------------------------------------------------------------------------
+   Sobreescribe las variables CSS para el tema oscuro.
+   Se activa automáticamente según la preferencia del sistema operativo.
+   ========================================================================== */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Colors - Dark Theme */
+    /* Fondos oscuros */
     --bg-app: #0b0f19;
     --bg-card: rgba(17, 24, 39, 0.7);
     --bg-editor: #111827;
+
+    /* Texto claro sobre fondo oscuro */
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
+
+    /* Bordes y sombras ajustados para oscuro */
     --border-color: rgba(31, 41, 55, 0.6);
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-    
+
+    /* Gradiente y acento (versiones más claras) */
     --primary-gradient: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
     --accent-color: #818cf8;
     --accent-hover: #6366f1;
     --accent-glow: rgba(129, 140, 248, 0.25);
-    
+
+    /* Colores semánticos - Tema oscuro */
     --color-success: #34d399;
     --color-success-bg: rgba(52, 211, 153, 0.12);
     --color-success-border: rgba(52, 211, 153, 0.35);
@@ -72,12 +124,25 @@
   }
 }
 
+/* ==========================================================================
+   Reset Global
+   --------------------------------------------------------------------------
+   Normaliza el box-model y elimina márgenes/paddings predeterminados
+   del navegador para tener una base consistente.
+   ========================================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ==========================================================================
+   Body
+   --------------------------------------------------------------------------
+   Aplica las variables CSS como estilos base.
+   min-height: 100vh asegura que el fondo cubra toda la ventana.
+   overflow-y: scroll evita saltos de layout cuando aparece scrollbar.
+   ========================================================================== */
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-app);
@@ -88,34 +153,54 @@ body {
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-/* Custom Premium Scrollbars */
+/* ==========================================================================
+   Scrollbars Personalizados (WebKit)
+   --------------------------------------------------------------------------
+   Estiliza las scrollbars con colores del tema.
+   Útil para mantener coherencia visual en la app.
+   ========================================================================== */
+
+/* Ancho del scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
+/* Track (fondo del scrollbar) */
 ::-webkit-scrollbar-track {
   background: var(--bg-app);
 }
 
+/* Thumb (barra deslizante) */
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
   border-radius: 5px;
-  border: 2px solid var(--bg-app);
+  border: 2px solid var(--bg-app); /* Crea un efecto de padding */
 }
 
+/* Thumb hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
 
-/* Base Headings */
+/* ==========================================================================
+   Headings Base
+   --------------------------------------------------------------------------
+   Estilos consistentes para todos los encabezados.
+   letter-spacing negativo para titulares más compactos (tracking-tighter).
+   ========================================================================== */
 h1, h2, h3, h4 {
   font-weight: 600;
   letter-spacing: -0.025em;
   color: var(--text-primary);
 }
 
-/* App Wrapper */
+/* ==========================================================================
+   #root — Contenedor Raíz de React
+   --------------------------------------------------------------------------
+   Ocupa todo el viewport y organiza el contenido en columna.
+   Los componentes hijos usan este contenedor como referencia de layout.
+   ========================================================================== */
 #root {
   width: 100%;
   min-height: 100vh;
@@ -123,7 +208,13 @@ h1, h2, h3, h4 {
   flex-direction: column;
 }
 
-/* Keyframe Animations */
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   --------------------------------------------------------------------------
+   Animaciones reutilizables en toda la aplicación.
+   ========================================================================== */
+
+/* fadeIn: entrada suave con desplazamiento vertical */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -135,6 +226,7 @@ h1, h2, h3, h4 {
   }
 }
 
+/* pulseGlow: pulso de sombra luminosa (usado en elementos de acento) */
 @keyframes pulseGlow {
   0%, 100% {
     box-shadow: 0 0 5px rgba(99, 102, 241, 0.2);
@@ -144,12 +236,14 @@ h1, h2, h3, h4 {
   }
 }
 
+/* spin: rotación infinita (usado en spinners de carga) */
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
+/* successPulse: escala rítmica (usado en indicadores de estado) */
 @keyframes successPulse {
   0%, 100% {
     transform: scale(1);
@@ -161,11 +255,18 @@ h1, h2, h3, h4 {
   }
 }
 
-/* Utility Animations */
+/* ==========================================================================
+   Utility Classes
+   --------------------------------------------------------------------------
+   Clases utilitarias reutilizables que aplican animaciones.
+   ========================================================================== */
+
+/* fadeIn al montar el elemento */
 .animate-fade-in {
   animation: fadeIn var(--transition-normal) forwards;
 }
 
+/* pulseGlow infinito */
 .animate-pulse-glow {
   animation: pulseGlow 2s infinite ease-in-out;
 }

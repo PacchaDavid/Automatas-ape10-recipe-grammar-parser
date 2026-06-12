@@ -1,13 +1,40 @@
 <!doctype html>
+<!--
+  ============================================================================
+  index.html
+  ----------------------------------------------------------------------------
+  Punto de entrada principal de la aplicación Vite + React + TypeScript.
+  Vite injecta el módulo principal (src/main.tsx) que monta la app React
+  en el elemento <div id="root">.
+  ============================================================================
+-->
 <html lang="en">
   <head>
+    <!-- Codificación de caracteres UTF-8 obligatoria para caracteres especiales -->
     <meta charset="UTF-8" />
+    <!-- Favicon en formato SVG (escalable, sin pérdida de calidad) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!--
+      Viewport meta para responsive design:
+      - width=device-width: se ajusta al ancho del dispositivo
+      - initial-scale=1.0: zoom inicial sin escala
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <!-- Título de la página visible en la pestaña del navegador -->
+    <title>Recipe Parser CFG - Frontend</title>
   </head>
   <body>
+    <!--
+      Contenedor raíz donde React monta toda la aplicación.
+      El div debe existir antes de que React intente renderizar.
+      Si no existe, createRoot() lanza un error.
+    -->
     <div id="root"></div>
+    <!--
+      Script principal con type="module" para que Vite lo procese.
+      Vite resuelve las importaciones y aplica HMR (Hot Module Replacement)
+      en desarrollo. En producción genera un bundle optimizado.
+    -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

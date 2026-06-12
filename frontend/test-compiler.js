@@ -1,11 +1,35 @@
-/**
- * Integration Test Suite for Recipe Parser CFG Backend compiler
- * Runs on Node.js using native global fetch.
- */
+/* ==========================================================================
+   test-compiler.js — Integration Test Suite for Recipe Parser CFG
+   --------------------------------------------------------------------------
+   Suite de pruebas de integración para el backend del compilador DSL.
+   Ejecuta casos de prueba contra el endpoint REST del compilador.
 
+   Casos de prueba:
+     - 5 casos de ÉXITO: recetas sintácticamente válidas
+     - 5 casos de ERROR: recetas con errores léxicos o sintácticos
+
+   Cada caso tiene:
+     - name:   nombre descriptivo del caso
+     - text:   código DSL de entrada
+     - assert: función validadora que verifica la respuesta del backend
+
+   Uso:
+     node test-compiler.js
+
+   Requisitos:
+     - Backend corriendo en http://localhost:9090
+     - Node.js 18+ (con fetch global nativo)
+   ========================================================================== */
+
+/* URL base del backend (configurable si cambia el puerto) */
 const BACKEND_URL = 'http://localhost:9090/api/compiler/analyze';
 
-// 5 Success test cases
+/* ========================================================================
+   5 SUCCESS TEST CASES
+   --------------------------------------------------------------------------
+   Recetas sintácticamente válidas que deberían pasar la compilación.
+   Cada caso prueba combinaciones específicas del DSL.
+   ======================================================================== */
 const SUCCESS_CASES = [
   {
     name: '1. Harina Básico',
@@ -66,7 +90,14 @@ STEP 3: ADD sugar;`,
   }
 ];
 
-// 5 Error test cases
+/* ========================================================================
+   5 ERROR TEST CASES
+   --------------------------------------------------------------------------
+   Recetas con errores intencionales que deberían fallar la compilación.
+   Cada caso prueba un tipo específico de error:
+     - Léxico: caracteres inválidos (coma, guion)
+     - Sintáctico: palabras clave en minúscula, falta punto y coma, acción inválida
+   ======================================================================== */
 const ERROR_CASES = [
   {
     name: '1. Carácter Inválido (Léxico - Coma)',
@@ -121,6 +152,22 @@ STEP 1: BAKE flour FOR 30 MINUTES;`,
   }
 ];
 
+/* ========================================================================
+   runTests: Ejecuta todos los casos de prueba secuencialmente.
+   --------------------------------------------------------------------------
+   Flujo:
+     1. Itera sobre SUCCESS_CASES y ejecuta cada uno
+     2. Itera sobre ERROR_CASES y ejecuta cada uno
+     3. Muestra resultados formateados con colores ANSI
+     4. Si hay fallos, termina con exit code 1
+
+   Formato de output:
+     ✓ PASS: Nombre del caso (verde)
+     ✗ FAIL: Nombre del caso (rojo)
+     Total: X | Pasados: Y | Fallados: Z
+
+   Nota: usa fetch nativo (Node 18+) sin axios ni librerías externas.
+   ======================================================================== */
 async function runTests() {
   console.log('\x1b[36m%s\x1b[0m', '=== INICIANDO PRUEBAS DE INTEGRACIÓN DEL COMPILADOR ===\n');
   let passed = 0;
@@ -168,9 +215,11 @@ async function runTests() {
   console.log(`TOTAL: ${passed + failed} | \x1b[32mPASADOS: ${passed}\x1b[0m | \x1b[31mFALLADOS: ${failed}\x1b[0m`);
   console.log('\x1b[36m%s\x1b[0m', '====================================================');
 
+  /* Si hay fallos, exit code 1 para integración CI/CD */
   if (failed > 0) {
     process.exit(1);
   }
 }
 
+/* Punto de entrada: ejecuta las pruebas */
 runTests();
